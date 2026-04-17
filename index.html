@@ -237,16 +237,18 @@
           }
 
           canvas.addEventListener("click", function (evt) {
-            if (selected.length >= finalDots.length) return;
             const pt = getClickPoint(evt);
-            const target = finalDots[selected.length];
-            const dist = Math.hypot(pt.x - target.x, pt.y - target.y);
-            if (dist <= dotRadius + 10) {
-              selected.push({ x: target.x, y: target.y });
+            const clickedDot = finalDots.find(dot => {
+            const isNear = Math.hypot(pt.x - dot.x, pt.y - dot.y) <= dotRadius + 10;
+            const alreadyUsed = selected.some(p => p.x === dot.x && p.y === dot.y);
+            return isNear && !alreadyUsed;
+            });
+            
+            if (clickedDot) {
+              selected.push({ x: clickedDot.x, y: clickedDot.y });
               updateValue();
               render();
-            }
-          });
+            });
 
           resetBtn.addEventListener("click", function () {
             selected = [];
